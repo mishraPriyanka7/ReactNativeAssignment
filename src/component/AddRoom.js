@@ -37,7 +37,7 @@ export default class AddRoom extends Component{
         let response = await AsyncStorage.getItem('addroom');
         let roomdetails = await JSON.parse(response) || [];
         this.setState({addroom:roomdetails});
-    }
+    } 
 
     async addRoom(monthlycost='', sutablefor='', gender='', securitydeposit='', availablefrom='', termlength=''){
         const addroom = [...this.state.addroom,
