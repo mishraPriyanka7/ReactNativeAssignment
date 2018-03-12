@@ -39,17 +39,21 @@ export default class CreateNewHome extends Component{
                         
                         <View style={{margin:5}}/>
 
-                    <View style={{flex:0.7, alignItems:'center',justifyContent:'center', marginTop:5}}>
+                    <View style={{flex:0.7, alignItems:'center',justifyContent:'center', marginTop:40}}>
+                    
+                    <TouchableOpacity onPress={() => Actions.AddRoom() }>
                         <Image 
                             style={{flex:1, alignItems:'center',justifyContent: 'center', 
-                            position: 'relative',width:'100%',  height:'100%'}}
+                            position: 'relative',width:350,  height:350}}
                             source={require('../images/createNewHome.png')}/>
+                            </TouchableOpacity>
+                   
                     </View>
                 </View>
                 </View>
                
                 
-                <View style={{flex:0.5 }}>
+                <View style={{flex:0.5 , marginTop:15}}>
 
                  <FlatList
                 data={ this.state.list }
@@ -117,7 +121,7 @@ export default class CreateNewHome extends Component{
                     
                     <View style={{flex:0.5, alignItems:'flex-start', justifyContent:'center', marginLeft:5}}>
 
-                        <TouchableOpacity activeOpacity = { .5 } onPress={() => Actions.AddRoom() }>
+                        <TouchableOpacity activeOpacity = { .5 } onPress={() => Actions.CreateHome() }>
                                     <Image
                                         source={require('../images/back-arrow.png')} 
                                         style={{

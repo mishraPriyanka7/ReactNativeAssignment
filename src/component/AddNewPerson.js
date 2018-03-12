@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Text, View, Image, StyleSheet, TextInput, 
-    FlatList, TouchableOpacity, ScrollView, Platform} from 'react-native';
+    FlatList, TouchableOpacity, ScrollView, Platform, AsyncStorage} from 'react-native';
 import {Actions} from 'react-native-router-flux';
 
 import TagInput from 'react-native-tag-input' ;
@@ -26,11 +26,37 @@ export default class AddNewPerson extends Component{
         this.state = {
             tags:['Cooking','Music','Weekends','Coffee','Running'],
             text: "",
-            path:(props.uri)?props.uri:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSswvUaEId6l3r8Y8oPpcqKNen-XaOXgdd2mAgQxjHntCL-nrEcg'
-         }
-
-       
+            path:(props.uri)?props.uri:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSswvUaEId6l3r8Y8oPpcqKNen-XaOXgdd2mAgQxjHntCL-nrEcg',
+                        
+            personName:'',
+            personAge:'',
+            personImage:'',
+            addNewPerson:[]
+        }  
     }
+
+    async componentDidMount(){
+        let response = await AsyncStorage.getItem('addNewPerson');
+        let personDetails = await JSON.parse(response) || [];
+        this.setState({addNewPerson:personDetails});
+    }
+
+
+    async addPerson( personName='', personAge='', personImage=''){
+        console.log("name : "+personName, "Age : "+personAge);
+        const addNewPerson = [...this.state.addNewPerson,
+        {
+            title: personName,
+            personAge: personAge,
+            image: personImage,
+            
+        }];
+        await AsyncStorage.setItem('addNewPerson',JSON.stringify(addNewPerson));
+        console.log('json data : '+JSON.stringify(addNewPerson));
+        Actions.SearchRoomerList();
+    }
+
+
 
     onChangeTags = (tags) => {
         this.setState({ tags });
@@ -82,6 +108,7 @@ export default class AddNewPerson extends Component{
                                     <View style={{flex:0.5, marginRight:5}}>
                                         <TextInput 
                                         style={styles.textInputStyleClass}
+                                        onChangeText={(value)=>{this.setState({personName:value}) }}
                                         underlineColorAndroid = "transparent"
                                         placeholder= "Enter Name"
                                         autoCapitalize = "none"/>
@@ -91,6 +118,7 @@ export default class AddNewPerson extends Component{
 
                                          <TextInput 
                                             style={styles.textInputStyleClass}
+                                            onChangeText={(value)=>{this.setState({personAge:value}) }}
                                             underlineColorAndroid = "transparent"
                                             placeholder= "Enter Age"
                                             autoCapitalize = "none"/>
@@ -175,7 +203,9 @@ export default class AddNewPerson extends Component{
                         alignItems:'center', justifyContent:'center'}}>
                                 <Text style= {{fontSize:20, color:'#FFFFFF'}}>Add</Text> 
 
-                            <TouchableOpacity activeOpacity = { .5 } onPress={() => Actions.CreateHome()} >
+                            <TouchableOpacity activeOpacity = { .5 } onPress={() =>
+                                 this.addPerson(this.state.personName, this.state.personAge, this.state.path)} >
+
                                 <Image source={require('../images/check-white.png')} 
                                         style={{ position: 'relative', height: 25, width: 25}} />
                             </TouchableOpacity>

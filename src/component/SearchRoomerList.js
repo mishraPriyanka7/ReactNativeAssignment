@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput, Image,AsyncStorage } from 'react-native';
 import SearchInput, { createFilter } from 'react-native-search-filter';
 import {Actions} from 'react-native-router-flux';
-import emails from './roomerJson';
+//import emails from './roomerJson';
 const KEYS_TO_FILTERS = ['id', 'title'];
 
 
@@ -13,14 +13,32 @@ export default class SearchRoomerList extends Component {
       searchTerm: '',
       image:'',
       title:'',
-      personselected:[]
+      personselected:[],
+      emails:[]
     }
   }
   async componentDidMount(){
+     
+ 
+    const data = await AsyncStorage.getItem('addNewPerson');
+      if(data){
+        this.setState({emails: JSON.parse(data)});
+      }else{
+          // this.setState({list:list});
+      }
+
+    // const data = await AsyncStorage.getItem('addNewPerson');
+    //     if(data){
+    //         this.setState({list: JSON.parse(data)});
+    //     }else{
+    //         //this.setState({list:[]});
+    //     }
+
       let response = await AsyncStorage.getItem('personselected');
       let persondetails = await JSON.parse(response) || [];
       this.setState({personselected:persondetails});
   }
+
   async searchperson(image='',title=''){
     const personselected = [...this.state.personselected,
     {
@@ -34,7 +52,7 @@ export default class SearchRoomerList extends Component {
     this.setState({ searchTerm: term })
   }
   render() {
-    const filteredEmails = emails.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
+    const filteredEmails = this.state.emails.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
     return (
       <View style={styles.container}>
 
